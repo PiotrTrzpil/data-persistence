@@ -36,3 +36,19 @@ Goals:
 ###  Path 3 (harder):
 - a child actor is spawned to manage the state of each voting that is in progress - with its persistence.
 - to handle increased load, the VotingsManager actor needs to be partitioned
+- use persistAsync instead of persist and deal with the consequences;)
+
+
+### Readings
+1. https://lostechies.com/gabrielschenker/2015/05/26/event-sourcing-revisited
+2. http://codebetter.com/gregyoung/2010/02/20/why-use-event-sourcing/
+3. http://krasserm.blogspot.co.uk/2011/11/building-event-sourced-web-application.html
+4. https://github.com/ironfish/akka-persistence-mongo-samples
+
+#### Some more advanced:
+5. https://skillsmatter.com/skillscasts/6387-introducing-event-sourced-microservices
+6. https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying
+7. http://blog.confluent.io/2015/03/04/turning-the-database-inside-out-with-apache-samza/
+8. http://krasserm.github.io/2015/01/13/event-sourcing-at-global-scale/
+9. http://blog.confluent.io/2015/01/29/making-sense-of-stream-processing/
+
