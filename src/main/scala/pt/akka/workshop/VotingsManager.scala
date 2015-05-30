@@ -1,5 +1,7 @@
 package pt.akka.workshop
 
+import java.util.UUID
+
 import akka.actor.{ActorLogging, Actor}
 import akka.persistence.{RecoveryCompleted, SnapshotOffer, PersistentActor}
 
@@ -47,7 +49,8 @@ Goals:
 
 object VotingsManager {
   case class CreateVoting(itemAId:String, itemBId:String, maxVotes:Int)
-  case class VotingCreated(votingId:String)
+  case class VotingId(votingId:String)
+  case class VotingCreated(votingId:String, voting:CreateVoting)
 
   case class Vote(votingId:String, itemId:String, userId:String)
 
@@ -72,13 +75,14 @@ object VotingsManager {
 class VotingsManager extends PersistentActor with ActorLogging {
   import VotingsManager._
 
+  var votings = Map[String, VotingCreated]()
+
   override def receiveCommand: Receive = {
-    case CreateVoting(itemAId, itemBId, maxVotes) =>
-      val replyTo = sender()
-      val created = VotingCreated("not implemented")
-      persist(created) { created =>
-        // not implemented
-        replyTo ! created
+    case create@CreateVoting(itemAId, itemBId, maxVotes) =>
+      val id = UUID.randomUUID().toString
+      persist(VotingCreated(id, create)) { created =>
+        votings = votings + (id -> created)
+        sender() ! VotingId(id)
         log.debug("Created a new voting with id: " + 0)
       }
     case Vote(votingId, itemId, userId) =>
@@ -89,8 +93,8 @@ class VotingsManager extends PersistentActor with ActorLogging {
   }
 
   def receiveRecover = {
-    case VotingCreated(votingId) =>
-      log.debug(s"recovering VotingCreated: " + votingId)
+    case VotingCreated(id, voting) =>
+      log.debug(s"recovering VotingCreated: " + id)
     case SnapshotOffer(_, snapshot: Any) =>
       log.debug(s"Integrating snapshot: " + snapshot)
     case RecoveryCompleted =>

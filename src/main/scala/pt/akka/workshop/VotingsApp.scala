@@ -28,7 +28,7 @@ import spray.json.DefaultJsonProtocol
 trait JsonFormats extends DefaultJsonProtocol {
 
   implicit val createVotingFormat = jsonFormat3(CreateVoting.apply)
-  implicit val votingCreatedFormat = jsonFormat1(VotingCreated.apply)
+  implicit val votingCreatedFormat = jsonFormat1(VotingId.apply)
   implicit val votingResultFormat = jsonFormat3(VotingResult.apply)
 
   implicit val voteFormat = jsonFormat3(Vote.apply)
@@ -73,7 +73,7 @@ trait ResourceService extends JsonFormats {
         pathEnd {
             (post & entity(as[CreateVoting])) { createVoting =>
               complete {
-                toResponse((votingsManager ? createVoting).mapTo[VotingCreated])
+                toResponse((votingsManager ? createVoting).mapTo[VotingId])
               }
             }
         } ~
